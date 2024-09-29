@@ -29,7 +29,7 @@ def main() -> None:
             trackName = currentTrack["item"]["name"]
             trackArtist = currentTrack["item"]["artists"][0]["name"]
             trackAlbum = currentTrack["item"]["album"]["name"]
-        print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\n")
+            print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\n")
 
         time.sleep(30)
 
