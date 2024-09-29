@@ -15,16 +15,21 @@ def main() -> None:
     LASTFMAPIKEY: str = secretsDictionary["lastfm"]["apiKey"].strip()
     LASTFMSHAREDSECRET: str = secretsDictionary["lastfm"]["sharedSecret"].strip()
 
-    # Initial post request ->
-    print(SPOTIFYCLIENTID, SPOTIFYCLIENTSECRET)
+    # Getting the token ->
+
     token = getToken(SPOTIFYCLIENTID, SPOTIFYCLIENTSECRET)
     
     # Get currently Playing Track ->
     
     while True:
-        time.sleep(30)
         currentTrack = token.current_user_playing_track()
-        print(currentTrack)
+        
+        trackName = currentTrack["item"]["name"]
+        trackArtist = currentTrack["item"]["artists"][0]["name"]
+        trackAlbum = currentTrack["item"]["album"]["name"]
+        print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\n")
+
+        time.sleep(30)
 
 def getToken(clientID: str, clientSecret: str):
     token = spotipy.Spotify(
