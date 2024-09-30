@@ -20,6 +20,12 @@ def main() -> None:
     trackName: str = ""
     trackArtist: str = ""
     trackAlbum: str = ""
+    
+    previousTrackName: str = ""
+    previousArtist: str = ""
+    previousAlbum: str = ""
+    
+    numberOfTimesRan: int = 0
 
     # Loading automatic edits ->
     
@@ -43,9 +49,11 @@ def main() -> None:
             or previousArtist != currentTrack["item"]["artists"][0]["name"]
             or previousAlbum !=  currentTrack["item"]["album"]["name"]
             and CandidateForScrobble == True
+            and numberOfTimesRan >= 1
             ):
                 print("Scrobble!")
                 CandidateForScrobble = False
+                numberOfTimesRan = numberOfTimesRan + 1
                     
             trackName = currentTrack["item"]["name"]
             trackArtist = currentTrack["item"]["artists"][0]["name"]
@@ -53,7 +61,9 @@ def main() -> None:
             
             trackProgressMS = currentTrack["progress_ms"]
             trackProgressSeconds = trackProgressMS / 1000
-            trackDuration = currentTrack["available_markets"]["duration_ms"] / 100
+            trackDuration = currentTrack["item"]["duration_ms"] / 1000
+            
+            print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\nCurrent Progress: {str(trackProgressSeconds)}\n")
             
             previousTrackName = trackName
             previousArtist = trackArtist
