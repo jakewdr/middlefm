@@ -14,6 +14,10 @@ def main() -> None:
     
     LASTFMAPIKEY: str = secretsDictionary["lastfm"]["apiKey"].strip()
     LASTFMSHAREDSECRET: str = secretsDictionary["lastfm"]["sharedSecret"].strip()
+    
+    # Loading automatic edits ->
+    
+    secretsDictionary: dict = loadJson("automaticEdits.json")
 
     # Getting the token ->
 
@@ -29,11 +33,17 @@ def main() -> None:
             trackName = currentTrack["item"]["name"]
             trackArtist = currentTrack["item"]["artists"][0]["name"]
             trackAlbum = currentTrack["item"]["album"]["name"]
-            print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\n")
-
+            trackProgressMS = currentTrack["progress_ms"]
+            trackProgressSeconds = trackProgressMS / 1000
+            trackDuration = currentTrack["available_markets"]["duration_ms"] / 100
+            print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\nCurrent Progress: {str(trackProgressSeconds)}\n")
+            if (trackProgressSeconds > 240 or 
+            trackProgressSeconds > trackDuration / 2) and CandidateForScrobble == False:
+                CandidateForScrobble = True
+                print("Ready to scrobble!")
         time.sleep(10)
 
-def getToken(clientID: str, clientSecret: str):
+def getToken(clientID: str, clientSecret: str) -> dict: 
     token = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
             client_id=clientID,
@@ -43,6 +53,42 @@ def getToken(clientID: str, clientSecret: str):
         )
     )
     return token
+
+def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
+    if album in edits["album"]:
+        currentAlbum = edits["album"][album]
+        if title not in currentAlbum["ignoredTracks"]:
+            if currentAlbum["newAlbum"] != "":
+                album = currentAlbum["newAlbum"]
+            if currentAlbum["newArtist"] != "":
+                artist = currentAlbum["newArtist"]
+            if currentAlbum["removeString"] != "":
+                title = title.replace(currentAlbum["removeString"], "")
+            if currentAlbum["format"] != "":
+                if currentAlbum["format"] == "capital":
+                    title.title()
+                elif currentAlbum["format"] == "capital1":
+                    title.capitalize()
+                elif currentAlbum["format"] == "lower":
+                    title.lower()
+                elif currentAlbum["format"] == "upper":
+                    title.upper()
+        elif title in currentAlbum["ignoredTracks"]:
+            if currentAlbum["ignoredTracksNewAlbum"] != "":
+                album = currentAlbum["ignoredTracksNewAlbum"]
+            if currentAlbum["ignoredTracksRemoveString"] != "":
+                title = title.replace(currentAlbum["removeString"], "")
+    elif title in edits["song"]:
+        currentSong = edits["song"][title]
+        if currentSong["originalArtist"] == artist and currentSong["originalAlbum"] == album:
+            if currentSong["newName"] != "":
+                title = currentSong["newName"]
+            if currentSong["newArtist"] != "":
+                artist = currentSong["newArtist"]
+            if currentSong["newAlbum"] != "":
+                album = currentSong["newAlbum"]
+    
+    return [title, artist, album]    
 
 def loadJson(jsonFileName: str) -> dict:
     with open(jsonFileName, 'r') as file:
