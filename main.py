@@ -15,6 +15,12 @@ def main() -> None:
     LASTFMAPIKEY: str = secretsDictionary["lastfm"]["apiKey"].strip()
     LASTFMSHAREDSECRET: str = secretsDictionary["lastfm"]["sharedSecret"].strip()
     
+    # Making these empty strings for later ->
+    
+    trackName: str = ""
+    trackArtist: str = ""
+    trackAlbum: str = ""
+
     # Loading automatic edits ->
     
     secretsDictionary: dict = loadJson("automaticEdits.json")
@@ -29,14 +35,30 @@ def main() -> None:
         currentTrack = token.current_user_playing_track()
         if currentTrack == None:
             print("No track playing!")
+            if CandidateForScrobble == True:
+                print("Scrobble")
         else:
+            if (
+            previousTrackName != currentTrack["item"]["name"] 
+            or previousArtist != currentTrack["item"]["artists"][0]["name"]
+            or previousAlbum !=  currentTrack["item"]["album"]["name"]
+            and CandidateForScrobble == True
+            ):
+                print("Scrobble!")
+                CandidateForScrobble = False
+                    
             trackName = currentTrack["item"]["name"]
             trackArtist = currentTrack["item"]["artists"][0]["name"]
             trackAlbum = currentTrack["item"]["album"]["name"]
+            
             trackProgressMS = currentTrack["progress_ms"]
             trackProgressSeconds = trackProgressMS / 1000
             trackDuration = currentTrack["available_markets"]["duration_ms"] / 100
-            print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\nCurrent Progress: {str(trackProgressSeconds)}\n")
+            
+            previousTrackName = trackName
+            previousArtist = trackArtist
+            previousAlbum = previousAlbum
+
             if (trackProgressSeconds > 240 or 
             trackProgressSeconds > trackDuration / 2) and CandidateForScrobble == False:
                 CandidateForScrobble = True
