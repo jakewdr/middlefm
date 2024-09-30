@@ -31,7 +31,7 @@ def main() -> None:
             trackAlbum = currentTrack["item"]["album"]["name"]
             print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\n")
 
-        time.sleep(30)
+        time.sleep(10)
 
 def getToken(clientID: str, clientSecret: str):
     token = spotipy.Spotify(

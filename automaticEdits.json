@@ -1,0 +1,26 @@
+{
+    "albums": {
+        "Ants From Up There (Deluxe)":{
+            "newAlbum": "Queen Elizabeth Hall (06/03/2021)",
+            "newArtist": "",
+            "removeString": "(Live from the Queen Elizabeth Hall)",
+            "format": "",
+            "ignoredTracks": ["Intro", "Chaos Space Marine", "Concorde",
+            "Bread Song", "Good Will Hunting", "Haldern", "Mark’s Theme",
+            "The Place Where He Inserted The Blade", "Snow Globes",
+            "Basketball Shoes"],
+            "ignoredTracksNewAlbum": "Ants From Up There",
+            "ignoredTracksRemoveString": ""
+        }
+    },
+    "songs": {
+        "call me maybe (original)": {
+            "originalArtist": "JPEGMAFIA", 
+            "originalAlbum": "call me maybe (original)",
+            "newName": "Call Me Maybe",
+            "newArtist": "Devon Hendryx",
+            "newAlbum": "THE GHOST~POP TAPE"
+        }
+
+    }
+}
