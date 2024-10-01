@@ -21,9 +21,8 @@ def main() -> None:
     trackArtist: str = ""
     trackAlbum: str = ""
     
-    previousTrackName: str = ""
-    previousArtist: str = ""
-    previousAlbum: str = ""
+    lastTrackID: str = ""
+    scrobbledTracks: set = set()
     
     numberOfTimesRan: int = 0
 
@@ -39,27 +38,29 @@ def main() -> None:
     
     while True:
         currentTrack = token.current_user_playing_track()
-        if currentTrack == None:
-            print("No track playing!")
-        else:       
+        if (currentTrack and currentTrack["is_playing"]) == True:       
             trackName = currentTrack["item"]["name"]
             trackArtist = currentTrack["item"]["artists"][0]["name"]
             trackAlbum = currentTrack["item"]["album"]["name"]
+            trackID = currentTrack['item']['id']
             
             trackProgressMS = currentTrack["progress_ms"]
             trackProgressSeconds = trackProgressMS / 1000
-            trackDuration = currentTrack["item"]["duration_ms"] / 1000
+            trackDurationSeconds = currentTrack["item"]["duration_ms"] / 1000
             
             print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\nCurrent Progress: {str(trackProgressSeconds)}\n")
-            
-            previousTrackName = trackName
-            previousArtist = trackArtist
-            previousAlbum = previousAlbum
 
-            if (trackProgressSeconds > 240 or 
-            trackProgressSeconds > trackDuration / 2) and CandidateForScrobble == False:
-                CandidateForScrobble = True
-                print("Ready to scrobble!")
+            if (trackProgressSeconds >= 240 or 
+            trackProgressSeconds >= trackDurationSeconds / 2):
+                if trackID  not in scrobbledTracks:
+                    print("Scrobble")
+                scrobbledTracks.add(trackID)
+                
+            if lastTrackID != trackID or trackProgressMS < 15000:  # Reset if the track ID changes or restarts
+                lastTrackID = trackID
+                scrobbledTracks.clear()
+        else:
+            print("No track playing!")
         time.sleep(10)
 
 def getToken(clientID: str, clientSecret: str) -> dict: 
