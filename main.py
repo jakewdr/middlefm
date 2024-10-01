@@ -41,20 +41,7 @@ def main() -> None:
         currentTrack = token.current_user_playing_track()
         if currentTrack == None:
             print("No track playing!")
-            if CandidateForScrobble == True and  numberOfTimesRan >= 1:
-                print("Scrobble!")
-        else:
-            if (
-            previousTrackName != currentTrack["item"]["name"] 
-            or previousArtist != currentTrack["item"]["artists"][0]["name"]
-            or previousAlbum !=  currentTrack["item"]["album"]["name"]
-            and CandidateForScrobble == True
-            and numberOfTimesRan >= 1
-            ):
-                print("Scrobble!")
-                CandidateForScrobble = False
-                numberOfTimesRan = numberOfTimesRan + 1
-                    
+        else:       
             trackName = currentTrack["item"]["name"]
             trackArtist = currentTrack["item"]["artists"][0]["name"]
             trackAlbum = currentTrack["item"]["album"]["name"]
