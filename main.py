@@ -1,6 +1,9 @@
 import json
-import spotipy
 import time
+import hashlib
+import spotipy
+import requests
+import urllib.parse
 from spotipy.oauth2 import SpotifyOAuth
 
 def main() -> None:
@@ -14,7 +17,8 @@ def main() -> None:
     
     LASTFMAPIKEY: str = secretsDictionary["lastfm"]["apiKey"].strip()
     LASTFMSHAREDSECRET: str = secretsDictionary["lastfm"]["sharedSecret"].strip()
-    
+    LASTFMUSERNAME: str = secretsDictionary["lastfm"]["username"].strip()
+    LASTFMPASSWORD = hashlib.md5(secretsDictionary["lastfm"]["password"].strip().encode("utf-8")).hexdigest()
     # Making these empty strings for later ->
     
     trackName: str = ""
@@ -28,12 +32,14 @@ def main() -> None:
 
     # Loading automatic edits ->
     
-    secretsDictionary: dict = loadJson("automaticEdits.json")
+    automaticEdits: dict = loadJson("automaticEdits.json")
 
-    # Getting the token ->
+    # Getting the Spotify token ->
 
     token = getToken(SPOTIFYCLIENTID, SPOTIFYCLIENTSECRET)
     
+    # Getting the Lastfm
+
     # Get currently Playing Track ->
     
     while True:
@@ -53,7 +59,7 @@ def main() -> None:
             if (trackProgressSeconds >= 240 or 
             trackProgressSeconds >= trackDurationSeconds / 2):
                 if trackID  not in scrobbledTracks:
-                    print("Scrobble")
+                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits)
                 scrobbledTracks.add(trackID)
                 
             if lastTrackID != trackID or trackProgressMS < 15000:  # Reset if the track ID changes or restarts
@@ -62,6 +68,34 @@ def main() -> None:
         else:
             print("No track playing!")
         time.sleep(10)
+
+def scrobbleTrack(track, artist, album, apiKey, edits):
+    newTags = tagFixer(track, artist, album, edits)
+    url = 'http://ws.audioscrobbler.com/2.0/'
+
+    # Prepare the data
+    data = {
+        'method': 'track.scrobble',
+        'api_key': apiKey,
+        'sk': getSessionKey(apiKey),
+        'artist': newTags[0],
+        'track': newTags[1],
+        'album': newTags[2],
+        'timestamp': time.time(),
+        'format': 'json'
+    }
+
+    signature = generateSignature(data)
+    data['api_sig'] = signature
+    
+    response = requests.post(url, data=data)
+
+def generateSignature(params, apiSecret):
+    # Sort parameters and concatenate them
+    keys = sorted(params.keys())
+    signature = ''.join(f'{key}{params[key]}' for key in keys)
+    signature += apiSecret
+    return hashlib.md5(signature.encode('utf-8')).hexdigest()
 
 def getToken(clientID: str, clientSecret: str) -> dict: 
     token = spotipy.Spotify(
@@ -74,9 +108,34 @@ def getToken(clientID: str, clientSecret: str) -> dict:
     )
     return token
 
+def getLastFMToken(apiKey):
+    authUrl = f'http://last.fm/api/auth/?api_key={apiKey}&cb={urllib.parse.quote("github.com/jakewdr/middlefm")}'
+    print(f'Visit this URL to authenticate: {authUrl}')
+    token = input("Paste the text after in the address bar after 'github.com/jakewdr/middlefm?token='")
+
+    return token
+
+def getSessionKey(apiKey):
+    url = 'http://ws.audioscrobbler.com/2.0/'
+
+    params = {
+        'method': 'auth.getSession',
+        'api_key': apiKey,
+        'token': getLastFMToken(apiKey),
+        'format': 'json'
+    }
+
+    # Make the request
+    response = requests.post(url, data=params)
+    sessionData = response.json()
+    print(sessionData)
+    sessionKey = sessionData['session']['key']
+
+    return sessionKey
+
 def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
-    if album in edits["album"]:
-        currentAlbum = edits["album"][album]
+    if album in edits["albums"]:
+        currentAlbum = edits["albums"][album]
         if title not in currentAlbum["ignoredTracks"]:
             if currentAlbum["newAlbum"] != "":
                 album = currentAlbum["newAlbum"]
@@ -98,8 +157,8 @@ def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
                 album = currentAlbum["ignoredTracksNewAlbum"]
             if currentAlbum["ignoredTracksRemoveString"] != "":
                 title = title.replace(currentAlbum["removeString"], "")
-    elif title in edits["song"]:
-        currentSong = edits["song"][title]
+    elif title in edits["songs"]:
+        currentSong = edits["songs"][title]
         if currentSong["originalArtist"] == artist and currentSong["originalAlbum"] == album:
             if currentSong["newName"] != "":
                 title = currentSong["newName"]
