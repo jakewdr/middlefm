@@ -59,7 +59,7 @@ def main() -> None:
             if (trackProgressSeconds >= 240 or 
             trackProgressSeconds >= trackDurationSeconds / 2):
                 if trackID  not in scrobbledTracks:
-                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits)
+                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits, LASTFMSHAREDSECRET)
                 scrobbledTracks.add(trackID)
                 
             if lastTrackID != trackID or trackProgressMS < 15000:  # Reset if the track ID changes or restarts
@@ -69,7 +69,7 @@ def main() -> None:
             print("No track playing!")
         time.sleep(10)
 
-def scrobbleTrack(track, artist, album, apiKey, edits):
+def scrobbleTrack(track, artist, album, apiKey, edits, secret):
     newTags = tagFixer(track, artist, album, edits)
     url = 'http://ws.audioscrobbler.com/2.0/'
 
@@ -77,7 +77,7 @@ def scrobbleTrack(track, artist, album, apiKey, edits):
     data = {
         'method': 'track.scrobble',
         'api_key': apiKey,
-        'sk': getSessionKey(apiKey),
+        'sk': getSessionKey(apiKey, secret),
         'artist': newTags[0],
         'track': newTags[1],
         'album': newTags[2],
@@ -85,7 +85,7 @@ def scrobbleTrack(track, artist, album, apiKey, edits):
         'format': 'json'
     }
 
-    signature = generateSignature(data)
+    signature = generateSignature(data, secret)
     data['api_sig'] = signature
     
     response = requests.post(url, data=data)
@@ -109,22 +109,23 @@ def getToken(clientID: str, clientSecret: str) -> dict:
     return token
 
 def getLastFMToken(apiKey):
-    authUrl = f'http://last.fm/api/auth/?api_key={apiKey}&cb={urllib.parse.quote("github.com/jakewdr/middlefm")}'
+    authUrl = f'http://last.fm/api/auth/?api_key={apiKey}&cb={urllib.parse.quote("https://github.com/jakewdr/middlefm/")}'
     print(f'Visit this URL to authenticate: {authUrl}')
     token = input("Paste the text after in the address bar after 'github.com/jakewdr/middlefm?token='")
 
     return token
 
-def getSessionKey(apiKey):
+def getSessionKey(apiKey, apiSecret):
     url = 'http://ws.audioscrobbler.com/2.0/'
-
+    tokenValue = getLastFMToken(apiKey)
     params = {
         'method': 'auth.getSession',
         'api_key': apiKey,
-        'token': getLastFMToken(apiKey),
+        'token': tokenValue,
         'format': 'json'
     }
-
+    params["api_sig"] = f"api_key{params['api_key']}methodauth.getSessiontoken{tokenValue}{apiSecret}"
+    params["api_sig"] = hashlib.md5(params["api_sig"].encode('utf-8')).hexdigest()
     # Make the request
     response = requests.post(url, data=params)
     sessionData = response.json()
