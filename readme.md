@@ -20,6 +20,8 @@ Then just run:
 
 ## Getting API keys
 
+Firstly rename templateSecrets.json to secrets.json
+
 Next you are going to need to acquire [last.fm](https://www.last.fm/api/account/create) and [Spotify](https://developer.spotify.com/dashboard) api keys
 
 ### LastFM
@@ -51,7 +53,7 @@ Then as with lastfm you copy the client ID and client secret into the relevant j
 
 Next up is authentication, run the getSessionKey.py file and follow the steps making sure to paste the information after ?token= only
 
-In the command line you should get an xml file, all you need to do is copy the sk tag and paste it into the relevant field of the json file
+In the command line you should get the session key, which you can copy and paste into the relevant field of the json file
 
 ## Spotify token
 

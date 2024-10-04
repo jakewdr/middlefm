@@ -37,6 +37,7 @@ def loadJson(jsonFileName: str) -> dict:
         return {}
     
 def generateSignature(params, apiSecret):
+    del params["format"]
     keys = sorted(params.keys())
     signature = ''.join(f'{key}{params[key]}' for key in keys) + apiSecret
     return hashlib.md5(signature.encode('utf-8')).hexdigest()
