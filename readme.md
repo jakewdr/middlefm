@@ -49,7 +49,7 @@ Spotify can be a bit more difficult but the steps are largely the same. First lo
 
 Then as with lastfm you copy the client ID and client secret into the relevant json fields
 
-## Lastfm session key
+## LastFM session key
 
 Next up is authentication, run the getSessionKey.py file and follow the steps making sure to paste the information after ?token= only
 
