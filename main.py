@@ -1,5 +1,7 @@
 import json
 import time
+import calendar
+import datetime
 import hashlib
 import spotipy
 import requests
@@ -14,6 +16,7 @@ def main() -> None:
     
     LASTFMAPIKEY = secretsDictionary["lastfm"]["apiKey"].strip()
     LASTFMSHAREDSECRET = secretsDictionary["lastfm"]["sharedSecret"].strip()
+    LASTFMSESSIONKEY = secretsDictionary["lastfm"]["sessionKey"].strip()
 
     lastTrackID = ""
     scrobbledTracks = set()
@@ -21,8 +24,6 @@ def main() -> None:
     automaticEdits = loadJson("automaticEdits.json")
 
     token = getToken(SPOTIFYCLIENTID, SPOTIFYCLIENTSECRET)
-    lastFMToken = getLastFMToken(LASTFMAPIKEY)
-    lastFMsessionKey = getSessionKey(LASTFMAPIKEY, LASTFMSHAREDSECRET, lastFMToken)
 
     while True:
         try:
@@ -39,7 +40,7 @@ def main() -> None:
                 print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\nCurrent Progress: {trackProgressSeconds:.2f}\n")
 
                 if trackID not in scrobbledTracks and (trackProgressSeconds >= 240 or trackProgressSeconds >= trackDurationSeconds / 2):
-                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits, LASTFMSHAREDSECRET, lastFMToken, lastFMsessionKey)
+                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits, LASTFMSHAREDSECRET, LASTFMSESSIONKEY, trackProgressSeconds)
                     scrobbledTracks.add(trackID)
 
                 if lastTrackID != trackID or trackProgressMS < 15000:  # Reset if the track ID changes or restarts
@@ -47,23 +48,22 @@ def main() -> None:
                     scrobbledTracks.clear()
             else:
                 print("No track playing!")
-        except Exception as e:
-            print(f"Error: {e}")
+        except Exception as error:
+            print(f"Error: {error}")
         
         time.sleep(10)
 
-def scrobbleTrack(track, artist, album, apiKey, edits, secret, token, sessionKey):
+def scrobbleTrack(track, artist, album, apiKey, edits, secret, sessionKey, trackProgress):
     newTags = tagFixer(track, artist, album, edits)
-    url = 'http://ws.audioscrobbler.com/2.0/'
-
+    url = "http://ws.audioscrobbler.com/2.0/"
     data = {
         'method': 'track.scrobble',
         'api_key': apiKey,
         'sk': sessionKey,
-        'artist': newTags[0],
-        'track': newTags[1],
+        'artist': newTags[1],
+        'track': newTags[0],
         'album': newTags[2],
-        'timestamp': int(time.time()),
+        'timestamp': int(calendar.timegm(datetime.datetime.utcnow().utctimetuple())) - int(trackProgress),
         'format': 'json'
     }
 
@@ -74,10 +74,12 @@ def scrobbleTrack(track, artist, album, apiKey, edits, secret, token, sessionKey
         response = requests.post(url, data=data)
         response.raise_for_status()  # Raises an HTTPError for bad responses
         print("Track scrobbled successfully.")
-    except requests.RequestException as e:
-        print(f"Failed to scrobble track: {e}")
+    except requests.RequestException as error:
+        print(f"Failed to scrobble track: {error}")
+        print(f"Response content: {response.text}")
 
 def generateSignature(params, apiSecret):
+    del params["format"]
     keys = sorted(params.keys())
     signature = ''.join(f'{key}{params[key]}' for key in keys) + apiSecret
     return hashlib.md5(signature.encode('utf-8')).hexdigest()
@@ -89,31 +91,6 @@ def getToken(clientID: str, clientSecret: str) -> dict:
         redirect_uri="https://github.com/jakewdr/middlefm/",
         scope="user-read-playback-state"
     ))
-
-def getLastFMToken(apiKey):
-    authUrl = f'http://last.fm/api/auth/?api_key={apiKey}&cb={urllib.parse.quote("https://github.com/jakewdr/middlefm/")}'
-    print(f'Visit this URL to authenticate: {authUrl}')
-    token = input("Paste the text after 'github.com/jakewdr/middlefm?token=': ")
-    return token
-
-def getSessionKey(apiKey, apiSecret, tokenValue):
-    url = 'http://ws.audioscrobbler.com/2.0/'
-    params = {
-        'method': 'auth.getSession',
-        'api_key': apiKey,
-        'token': tokenValue,
-        'format': 'json'
-    }
-    params["api_sig"] = generateSignature(params, apiSecret)
-    
-    try:
-        response = requests.post(url, data=params)
-        response.raise_for_status()
-        sessionData = response.json()
-        return sessionData['session']['key']
-    except requests.RequestException as e:
-        print(f"Failed to get session key: {e}")
-        return None
 
 def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
     if album in edits["albums"]:
@@ -155,8 +132,8 @@ def loadJson(jsonFileName: str) -> dict:
     try:
         with open(jsonFileName, 'r') as file:
             return json.load(file)
-    except Exception as e:
-        print(f"Failed to load JSON file {jsonFileName}: {e}")
+    except Exception as error:
+        print(f"Failed to load JSON file {jsonFileName}: {error}")
         return {}
 
 if __name__ == "__main__":
