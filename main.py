@@ -36,6 +36,7 @@ def main() -> None:
                 trackProgressMS = currentTrack["progress_ms"]
                 trackProgressSeconds = trackProgressMS / 1000
                 trackDurationSeconds = currentTrack["item"]["duration_ms"] / 1000
+                currentlyPlayingTrack(trackName, trackArtist, trackAlbum, automaticEdits, LASTFMAPIKEY, LASTFMSHAREDSECRET, LASTFMSESSIONKEY)
                 
                 print(f"Name: {trackName}\nArtist: {trackArtist}\nAlbum: {trackAlbum}\nCurrent Progress: {trackProgressSeconds:.2f}\n")
 
@@ -74,6 +75,28 @@ def scrobbleTrack(track, artist, album, apiKey, edits, secret, sessionKey, track
         response = requests.post(url, data=data)
         response.raise_for_status()  # Raises an HTTPError for bad responses
         print("Track scrobbled successfully.")
+    except requests.RequestException as error:
+        print(f"Failed to scrobble track: {error}")
+        print(f"Response content: {response.text}")
+        
+def currentlyPlayingTrack(track, artist, album, edits, apiKey, secret, sessionKey):
+    newTags = tagFixer(track, artist, album, edits)
+    url = "http://ws.audioscrobbler.com/2.0/"
+    data = {
+        'method': 'track.updateNowPlaying',
+        'api_key': apiKey,
+        'sk': sessionKey,
+        'artist': newTags[1],
+        'track': newTags[0],
+        'album': newTags[2],
+        'format': 'json'
+    }
+    signature = generateSignature(data, secret)
+    data['api_sig'] = signature
+    
+    try:
+        response = requests.post(url, data=data)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
     except requests.RequestException as error:
         print(f"Failed to scrobble track: {error}")
         print(f"Response content: {response.text}")
