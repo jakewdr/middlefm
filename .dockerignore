@@ -1,0 +1,7 @@
+getSessionKey.py
+readme.md
+templateSecrets.json
+.gitignore
+.gitattributes
+LICENSE
+venv
