@@ -1,4 +1,3 @@
-# I literally can't be asked to finish this
 import json
 import time
 import hashlib
@@ -35,10 +34,12 @@ def main() -> None:
     
     automaticEdits: dict = loadJson("automaticEdits.json")
 
-    # Getting the Spotify token ->
+    # Getting the authentication done ->
 
     token = getToken(SPOTIFYCLIENTID, SPOTIFYCLIENTSECRET)
-    
+    lastFMToken = getLastFMToken(LASTFMAPIKEY)
+    lastFMsessionKey = getSessionKey(LASTFMAPIKEY, LASTFMSHAREDSECRET, lastFMToken)
+
     # Getting the Lastfm
 
     # Get currently Playing Track ->
@@ -60,7 +61,7 @@ def main() -> None:
             if (trackProgressSeconds >= 240 or 
             trackProgressSeconds >= trackDurationSeconds / 2):
                 if trackID  not in scrobbledTracks:
-                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits, LASTFMSHAREDSECRET)
+                    scrobbleTrack(trackName, trackArtist, trackAlbum, LASTFMAPIKEY, automaticEdits, LASTFMSHAREDSECRET, lastFMToken, lastFMsessionKey)
                 scrobbledTracks.add(trackID)
                 
             if lastTrackID != trackID or trackProgressMS < 15000:  # Reset if the track ID changes or restarts
@@ -70,7 +71,7 @@ def main() -> None:
             print("No track playing!")
         time.sleep(10)
 
-def scrobbleTrack(track, artist, album, apiKey, edits, secret):
+def scrobbleTrack(track, artist, album, apiKey, edits, secret, token, sessionKey):
     newTags = tagFixer(track, artist, album, edits)
     url = 'http://ws.audioscrobbler.com/2.0/'
 
@@ -78,7 +79,7 @@ def scrobbleTrack(track, artist, album, apiKey, edits, secret):
     data = {
         'method': 'track.scrobble',
         'api_key': apiKey,
-        'sk': getSessionKey(apiKey, secret),
+        'sk': sessionKey,
         'artist': newTags[0],
         'track': newTags[1],
         'album': newTags[2],
@@ -116,9 +117,8 @@ def getLastFMToken(apiKey):
 
     return token
 
-def getSessionKey(apiKey, apiSecret):
+def getSessionKey(apiKey, apiSecret, tokenValue):
     url = 'http://ws.audioscrobbler.com/2.0/'
-    tokenValue = getLastFMToken(apiKey)
     params = {
         'method': 'auth.getSession',
         'api_key': apiKey,
@@ -130,7 +130,6 @@ def getSessionKey(apiKey, apiSecret):
     # Make the request
     response = requests.post(url, data=params)
     sessionData = response.json()
-    print(sessionData)
     sessionKey = sessionData['session']['key']
 
     return sessionKey
@@ -168,7 +167,7 @@ def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
                 artist = currentSong["newArtist"]
             if currentSong["newAlbum"] != "":
                 album = currentSong["newAlbum"]
-    
+    print([title, album, artist])
     return [title, artist, album]    
 
 def loadJson(jsonFileName: str) -> dict:
