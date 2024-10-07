@@ -66,3 +66,7 @@ To generate a docker image run:
     docker build -t python-middlefm .
 
 This allows you to host the project anywhere you like, note anytime you change your automaticEdits.json file you will need to run this command and upload the new image to your hosting platform (this can be automated)
+
+Depending one where you hosted you may need to build with this flag:
+
+    --platform=linux/amd64
