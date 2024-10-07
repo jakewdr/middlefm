@@ -139,7 +139,7 @@ def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
                 album = currentAlbum["ignoredTracksNewAlbum"]
             if currentAlbum["ignoredTracksRemoveString"] != "":
                 title = title.replace(currentAlbum["removeString"], "")
-    elif title in edits["songs"]:
+    if title in edits["songs"]:
         currentSong = edits["songs"][title]
         if currentSong["originalArtist"] == artist and currentSong["originalAlbum"] == album:
             if currentSong["newName"] != "":

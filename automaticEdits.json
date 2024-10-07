@@ -11,8 +11,94 @@
             "Basketball Shoes"],
             "ignoredTracksNewAlbum": "Ants From Up There",
             "ignoredTracksRemoveString": ""
+        },
+        "Paul's Boutique (20th Anniversary Edition / Remastered)": {
+            "newAlbum": "Paul's Boutique",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+        "The Ghost~Pop Tape (Remastered + Original)": {
+            "newAlbum": "THE GHOST~POP TAPE",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+        "Feet of Clay (Deluxe)": {
+            "newAlbum": "FEET OF CLAY",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": [""],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+        "All Is Violent, All Is Bright (2011 Remastered Edition)": {
+            "newAlbum": "All Is Violent, All Is Bright",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": ["Fireflies and Empty Skies"],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+
+        "Kamisori Otome (Remastered)": {
+            "newAlbum": "Kamisori Otome",
+            "newArtist": "",
+            "removeString": " - remastered",
+            "format": "capital",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+        
+        "Watch the Throne (Deluxe)": {
+            "newAlbum": "Watch the Throne",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+
+        "Giant Steps (2020 Remaster)": {
+            "newAlbum": "Giant Steps",
+            "newArtist": "",
+            "removeString": " - 2020 Remaster",
+            "format": "",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+
+        "good kid, m.A.A.d city": {
+            "newAlbum": "good kid, m.A.A.d city (Deluxe)",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
+        },
+        "DAMN. COLLECTORS EDITION": {
+            "newAlbum": "DAMN.",
+            "newArtist": "",
+            "removeString": "",
+            "format": "",
+            "ignoredTracks": [],
+            "ignoredTracksNewAlbum": "",
+            "ignoredTracksRemoveString": ""
         }
     },
+
     "songs": {
         "call me maybe (original)": {
             "originalArtist": "JPEGMAFIA", 
@@ -20,7 +106,44 @@
             "newName": "Call Me Maybe",
             "newArtist": "Devon Hendryx",
             "newAlbum": "THE GHOST~POP TAPE"
-        }
+        },
+        "All Is Full Of Love - Howie's Version": {
+            "originalArtist": "Björk", 
+            "originalAlbum": "Homogenic",
+            "newName": "All Is Full Of Love",
+            "newArtist": "Björk",
+            "newAlbum": "Homogenic"
+        },
+        "Immature - Mark Bell's Version": {
+            "originalArtist": "Björk", 
+            "originalAlbum": "Homogenic",
+            "newName": "Immature",
+            "newArtist": "Björk",
+            "newAlbum": "Homogenic"
+        },
+        
+        "Play Dead - Tim Simenon 7\" Remix": {
+            "originalArtist": "Björk", 
+            "originalAlbum": "Debut",
+            "newName": "Play Dead",
+            "newArtist": "Björk",
+            "newAlbum": "Debut"
+        },
 
+        "There's More To Life Than This - Live At The Milk Bar Toilets": {
+            "originalArtist": "Björk", 
+            "originalAlbum": "Debut",
+            "newName": "There's More to Life Than This",
+            "newArtist": "Björk",
+            "newAlbum": "Debut"
+        },
+
+        "Fireflies and Empty Skies": {
+            "originalArtist": "God Is an Astronaut",
+            "originalAlbum": "All Is Violent, All Is Bright (2011 Remastered Edition)",
+            "newName": "Fire Flies and Empty Skies",
+            "newArtist": "God Is an Astronaut",
+            "newAlbum": "All Is Violent, All Is Bright"
+        }
     }
 }
