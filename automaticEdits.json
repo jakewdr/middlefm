@@ -1,6 +1,7 @@
 {
     "albums": {
         "Ants From Up There (Deluxe)":{
+            "originalArtist": "Black Country, New Road",
             "newAlbum": "Queen Elizabeth Hall (06/03/2021)",
             "newArtist": "",
             "removeString": "(Live from the Queen Elizabeth Hall)",
@@ -13,6 +14,7 @@
             "ignoredTracksRemoveString": ""
         },
         "Paul's Boutique (20th Anniversary Edition / Remastered)": {
+            "originalArtist": "Beastie Boys",
             "newAlbum": "Paul's Boutique",
             "newArtist": "",
             "removeString": "",
@@ -22,6 +24,7 @@
             "ignoredTracksRemoveString": ""
         },
         "The Ghost~Pop Tape (Remastered + Original)": {
+            "originalArtist": "Devon Hendryx",
             "newAlbum": "THE GHOST~POP TAPE",
             "newArtist": "",
             "removeString": "",
@@ -31,6 +34,7 @@
             "ignoredTracksRemoveString": ""
         },
         "Feet of Clay (Deluxe)": {
+            "originalArtist": "Earl Sweatshirt",
             "newAlbum": "FEET OF CLAY",
             "newArtist": "",
             "removeString": "",
@@ -40,6 +44,7 @@
             "ignoredTracksRemoveString": ""
         },
         "All Is Violent, All Is Bright (2011 Remastered Edition)": {
+            "originalArtist": "God Is an Astronaut",
             "newAlbum": "All Is Violent, All Is Bright",
             "newArtist": "",
             "removeString": "",
@@ -50,6 +55,7 @@
         },
 
         "Kamisori Otome (Remastered)": {
+            "originalArtist": "Ichiko Aoba",
             "newAlbum": "Kamisori Otome",
             "newArtist": "",
             "removeString": " - remastered",
@@ -60,6 +66,7 @@
         },
         
         "Watch the Throne (Deluxe)": {
+            "originalArtist": "JAY-Z",
             "newAlbum": "Watch the Throne",
             "newArtist": "",
             "removeString": "",
@@ -70,6 +77,7 @@
         },
 
         "Giant Steps (2020 Remaster)": {
+            "originalArtist": "John Coltrane",
             "newAlbum": "Giant Steps",
             "newArtist": "",
             "removeString": " - 2020 Remaster",
@@ -80,6 +88,7 @@
         },
 
         "good kid, m.A.A.d city": {
+            "originalArtist": "Kendrick Lamar",
             "newAlbum": "good kid, m.A.A.d city (Deluxe)",
             "newArtist": "",
             "removeString": "",
@@ -89,6 +98,7 @@
             "ignoredTracksRemoveString": ""
         },
         "DAMN. COLLECTORS EDITION": {
+            "originalArtist": "Kendrick Lamar",
             "newAlbum": "DAMN.",
             "newArtist": "",
             "removeString": "",
@@ -143,6 +153,14 @@
             "originalAlbum": "All Is Violent, All Is Bright (2011 Remastered Edition)",
             "newName": "Fire Flies and Empty Skies",
             "newArtist": "God Is an Astronaut",
+            "newAlbum": "All Is Violent, All Is Bright"
+        },
+
+        "Bitch, Don’t Kill My Vibe - Remix":{
+            "originalArtist": "Kendrick Lamar",
+            "originalAlbum": "All Is Violent, All Is Bright (2011 Remastered Edition)",
+            "newName": "Fire Flies and Empty Skies",
+            "newArtist": "Kendrick Lamar",
             "newAlbum": "All Is Violent, All Is Bright"
         }
     }

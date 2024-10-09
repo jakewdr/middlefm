@@ -116,7 +116,7 @@ def getToken(clientID: str, clientSecret: str) -> dict:
     ))
 
 def tagFixer(title: str, artist: str, album: str, edits: dict) -> list:
-    if album in edits["albums"]:
+    if album in edits["albums"] and artist in edits["albums"]["originalArtist"]:
         currentAlbum = edits["albums"][album]
         if title not in currentAlbum["ignoredTracks"]:
             if currentAlbum["newAlbum"] != "":
