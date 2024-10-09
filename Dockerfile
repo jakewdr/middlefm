@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11.10-alpine3.20
 
 ADD main.py .
 ADD secrets.json .
