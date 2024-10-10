@@ -127,7 +127,7 @@ def currentlyPlayingTrack(track, artist, album, edits, apiKey, secret, sessionKe
         response = requests.post(url, data=data)
         response.raise_for_status()  # Raises an HTTPError for bad responses
     except requests.RequestException as error:
-        print(f"Failed to scrobble track: {error}")
+        print(f"Failed to set track as currently playing: {error}")
         print(f"Response content: {response.text}")
 
 
