@@ -1,3 +1,5 @@
+*please contribute by adding automatic edits or any other code improvements!*
+
 # How to set this up
 
 ## Getting the project downloaded
