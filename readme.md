@@ -1,5 +1,7 @@
 # How to set this up
 
+*Note I'm in the process of moving this to flask to make it easier to deploy*
+
 ## Getting the project downloaded
 
 First thing you need to do is to get the code on your local machine, there are a few requirements though

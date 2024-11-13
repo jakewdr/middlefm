@@ -91,8 +91,7 @@ def scrobbleTrack(
         "artist": newTags[1],
         "track": newTags[0],
         "album": newTags[2],
-        "timestamp": int(calendar.timegm(datetime.datetime.utcnow().utctimetuple()))
-        - int(trackProgress),
+        "timestamp": int(calendar.timegm(datetime.datetime.utcnow().utctimetuple())),
         "format": "json",
     }
 
