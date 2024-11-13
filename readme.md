@@ -1,3 +1,5 @@
+*please contribute by adding automatic edits or any other code improvements!*
+
 # How to set this up
 
 *Note I'm in the process of moving this to flask to make it easier to deploy*
