@@ -83,7 +83,7 @@ def scrobbleTrack(
     track, artist, album, apiKey, edits, secret, sessionKey, trackProgress
 ):
     newTags = tagFixer(track, artist, album, edits)
-    url = "http://ws.audioscrobbler.com/2.0/:80"
+    url = "http://ws.audioscrobbler.com/2.0/"
     data = {
         "method": "track.scrobble",
         "api_key": apiKey,
@@ -109,7 +109,7 @@ def scrobbleTrack(
 
 def currentlyPlayingTrack(track, artist, album, edits, apiKey, secret, sessionKey):
     newTags = tagFixer(track, artist, album, edits)
-    url = "http://ws.audioscrobbler.com/2.0/:80"
+    url = "http://ws.audioscrobbler.com/2.0/"
     data = {
         "method": "track.updateNowPlaying",
         "api_key": apiKey,
