@@ -1,4 +1,4 @@
-*please contribute by adding automatic edits or any other code improvements!*
+*I stopped working on this and using spotify, I will merge any changes to this though*
 
 # How to set this up
 
